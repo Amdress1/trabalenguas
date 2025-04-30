@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronómetro de Trabalenguas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ADD8E6; /* Fondo azul claro */
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input {
+            width: 200px;
+        }
+
+        button {
+            background-color: #1E90FF; /* Azul */
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4682B4; /* Azul más oscuro */
+        }
+
+        .ranking {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .person {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cronómetro de Trabalenguas</h1>
+    
+    <label for="nombre">Ingresa tu nombre:</label>
+    <input type="text" id="nombre" placeholder="Nombre">
+    
+    <button onclick="iniciarCronometro()">Iniciar Cronómetro</button>
+    
+    <p id="instrucciones"></p>
+    
+    <button id="finalizarBtn" onclick="finalizarCronometro()" style="display: none;">Finalizar</button>
+    
+    <div class="ranking" id="ranking">
+        <h2>Ranking:</h2>
+    </div>
+
+    <script>
+        let personas = [];
+        let tiempoInicio;
+        let nombreActual;
+
+        function iniciarCronometro() {
+            nombreActual = document.getElementById("nombre").value;
+            if (nombreActual === "") {
+                alert("Por favor, ingresa un nombre.");
+                return;
+            }
+
+            tiempoInicio = Date.now();  // Guardamos el tiempo de inicio
+            document.getElementById("instrucciones").innerText = "¡Ahora, di el trabalenguas lo más rápido posible!";
+            document.getElementById("finalizarBtn").style.display = "inline-block";  // Mostrar el botón para finalizar
+        }
+
+        function finalizarCronometro() {
+            let tiempoFinal = Date.now();  // Guardamos el tiempo de finalización
+            let tiempoTotal = (tiempoFinal - tiempoInicio) / 1000;  // Tiempo en segundos
+
+            personas.push({ nombre: nombreActual, tiempo: tiempoTotal });
+
+            document.getElementById("instrucciones").innerText = `¡Bien hecho, ${nombreActual}! Tiempos registrados.`;
+
+            // Limpiar el campo de texto para el siguiente participante
+            document.getElementById("nombre").value = "";
+            document.getElementById("finalizarBtn").style.display = "none";  // Ocultar el botón de finalizar
+
+            mostrarRanking();  // Mostrar el ranking actualizado
+        }
+
+        function mostrarRanking() {
+            // Ordenar las personas por el tiempo más rápido
+            personas.sort((a, b) => a.tiempo - b.tiempo);
+
+            let rankingDiv = document.getElementById("ranking");
+            rankingDiv.innerHTML = "<h2>Ranking:</h2>";
+
+            // Mostrar los 5 primeros en el ranking
+            for (let i = 0; i < personas.length; i++) {
+                let personaDiv = document.createElement("div");
+                personaDiv.classList.add("person");
+                personaDiv.innerText = `${i + 1}. ${personas[i].nombre} - ${personas[i].tiempo.toFixed(2)} segundos`;
+                rankingDiv.appendChild(personaDiv);
+            }
+        }
+    </script>
+
+</body>
+</html>
